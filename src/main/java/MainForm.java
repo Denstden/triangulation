@@ -41,32 +41,37 @@ public class MainForm extends JFrame {
             String kStr = kTextField.getText();
             String mStr = mTextField.getText();
             Integer k = -1, m = -1;
+            boolean flag = true;
             try {
                 k = Integer.valueOf(kStr);
             } catch (Exception ex) {
                 inforamtionTextArea.append("Value in \"Number of vertices\" field is not a number\n");
+                flag = false;
             }
             try {
                 m = Integer.valueOf(mStr);
             } catch (Exception ex) {
                 inforamtionTextArea.append("Value in \"Number of polygons\" field is not a number\n");
+                flag = false;
             }
-            if (k > 2 && m > 1) {
-                List<ConvexHull> hulls = new PolygonsGenerator(m, k).generatePolygons();
-                triangulator.setHulls(hulls);
-                try {
-                    List<Pair<Point, Point>> edges = triangulator.triangulate();
-                    inforamtionTextArea.append("Triangulation is completed for " + m + " polygons with " + k + " vertices each.\nTime = " + triangulator.getTime() + " ms.\n");
-                    Printer.printAll(edges, hulls, triangulator.getTitle());
-                } catch (NoHullsException ex){
-                    inforamtionTextArea.append("Hulls do not generatePolygons!!!\n");
+            if (flag) {
+                if (k > 2 && m > 1) {
+                    List<ConvexHull> hulls = new PolygonsGenerator(m, k).generatePolygons();
+                    triangulator.setHulls(hulls);
+                    try {
+                        List<Pair<Point, Point>> edges = triangulator.triangulate();
+                        inforamtionTextArea.append("Triangulation is completed for " + m + " polygons with " + k + " vertices each.\nTime = " + triangulator.getTime() + " ms.\n");
+                        Printer.printAll(edges, hulls, triangulator.getTitle());
+                    } catch (NoHullsException ex) {
+                        inforamtionTextArea.append("Hulls do not generatePolygons!!!\n");
+                    }
                 }
-            }
-            if (k <= 2) {
-                inforamtionTextArea.append("Number of vertices is less or equal to 2.\nPlease, choose greater number.\n");
-            }
-            if (m <= 1) {
-                inforamtionTextArea.append("Number of polygons is less or equal to 1.\nPlease, choose greater number.\n");
+                if (k <= 2) {
+                    inforamtionTextArea.append("Number of vertices is less or equal to 2.\nPlease, choose greater number.\n");
+                }
+                if (m <= 1) {
+                    inforamtionTextArea.append("Number of polygons is less or equal to 1.\nPlease, choose greater number.\n");
+                }
             }
         });
 
@@ -109,15 +114,19 @@ public class MainForm extends JFrame {
         drawPolygonsButton.addActionListener(e->{
             String kStr = kTextField.getText();
             Integer k = -1;
+            boolean flag = true;
             try {
                 k = Integer.valueOf(kStr);
             } catch (Exception ex) {
                 inforamtionTextArea.append("Value in \"Number of vertices\" field is not a number\n");
+                flag = false;
             }
-            if (k <= 2) {
-                inforamtionTextArea.append("Number of vertices is less or equal to 2.\nPlease, choose greater number.\n");
-            } else {
-                new DrawPolygons(k, inforamtionTextArea, triangulator);
+            if (flag) {
+                if (k <= 2) {
+                    inforamtionTextArea.append("Number of vertices is less or equal to 2.\nPlease, choose greater number.\n");
+                } else {
+                    new DrawPolygons(k, inforamtionTextArea, triangulator);
+                }
             }
         });
 
